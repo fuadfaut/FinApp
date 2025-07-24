@@ -1,14 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   ssr: false,
-    target: 'static',
-  nitro: {
-    output: {
-      dir: 'output',
-      publicDir: 'output/public',
-      serverDir: 'output/server'
-    }
-  },
+
   app: {
     head: {
       title: 'FinApp Gokil! - Keuangan Sederhana',

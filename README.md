@@ -34,8 +34,8 @@ FinApp Gokil! adalah aplikasi keuangan sederhana berbasis Progressive Web App (P
 1. Clone repositori ini
 
 ```bash
-git clone https://github.com/username/finapp-gokil.git
-cd finapp-gokil
+git clone https://github.com/fuadfaut/FinApp.git
+cd finapp
 ```
 
 2. Instal dependensi
@@ -121,4 +121,4 @@ Proyek ini dilisensikan di bawah [MIT License](LICENSE).
 
 ## Kontak
 
-Jika Anda memiliki pertanyaan atau saran, silakan buka issue di repositori GitHub atau hubungi pengembang di email@example.com.
+Jika Anda memiliki pertanyaan atau saran, silakan buka issue di repositori GitHub
