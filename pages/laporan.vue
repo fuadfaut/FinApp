@@ -134,7 +134,7 @@ const filteredTransactions = computed(() => {
 
   switch (selectedPeriod.value) {
     case 'week':
-      startDate = now.subtract(1, 'week');
+      startDate = now.startOf('week');
       break;
     case 'month':
       startDate = now.startOf('month');
@@ -157,13 +157,13 @@ const filteredTransactions = computed(() => {
 // Calculate period income and expense
 const periodIncome = computed(() => {
   return filteredTransactions.value
-    .filter(trx => trx.tipe === 'pemasukan')
+    .filter(trx => trx.tipe === 'income')
     .reduce((sum, trx) => sum + trx.jumlah, 0);
 });
 
 const periodExpense = computed(() => {
   return filteredTransactions.value
-    .filter(trx => trx.tipe === 'pengeluaran')
+    .filter(trx => trx.tipe === 'expense')
     .reduce((sum, trx) => sum + trx.jumlah, 0);
 });
 
@@ -179,7 +179,7 @@ const largestCategory = computed(() => {
   const expensesByCategory = {};
   
   filteredTransactions.value
-    .filter(trx => trx.tipe === 'pengeluaran')
+    .filter(trx => trx.tipe === 'expense')
     .forEach(trx => {
       if (!expensesByCategory[trx.kategori]) {
         expensesByCategory[trx.kategori] = 0;
@@ -200,10 +200,10 @@ const largestCategory = computed(() => {
 
 // Create income vs expense chart
 const createIncomeExpenseChart = () => {
+  if (!incomeExpenseChart.value) return;
   if (incomeExpenseChartInstance) {
     incomeExpenseChartInstance.destroy();
   }
-  
   const ctx = incomeExpenseChart.value.getContext('2d');
   
   // Group by month or day based on period
@@ -220,9 +220,9 @@ const createIncomeExpenseChart = () => {
       groupedData[date] = { income: 0, expense: 0 };
     }
     
-    if (trx.tipe === 'pemasukan') {
+    if (trx.tipe === 'income') {
       groupedData[date].income += trx.jumlah;
-    } else {
+    } else if (trx.tipe === 'expense') {
       groupedData[date].expense += trx.jumlah;
     }
   });
@@ -275,17 +275,17 @@ const createIncomeExpenseChart = () => {
 
 // Create category chart
 const createCategoryChart = () => {
+  if (!categoryChart.value) return;
   if (categoryChartInstance) {
     categoryChartInstance.destroy();
   }
-  
   const ctx = categoryChart.value.getContext('2d');
   
   // Prepare data
   const expensesByCategory = {};
   
   filteredTransactions.value
-    .filter(trx => trx.tipe === 'pengeluaran')
+    .filter(trx => trx.tipe === 'expense')
     .forEach(trx => {
       if (!expensesByCategory[trx.kategori]) {
         expensesByCategory[trx.kategori] = 0;
@@ -353,17 +353,17 @@ const createCategoryChart = () => {
 
 // Create wallet chart
 const createWalletChart = () => {
+  if (!walletChart.value) return;
   if (walletChartInstance) {
     walletChartInstance.destroy();
   }
-  
   const ctx = walletChart.value.getContext('2d');
   
   // Prepare data
   const expensesByWallet = {};
   
   filteredTransactions.value
-    .filter(trx => trx.tipe === 'pengeluaran')
+    .filter(trx => trx.tipe === 'expense')
     .forEach(trx => {
       if (!expensesByWallet[trx.kantong]) {
         expensesByWallet[trx.kantong] = 0;
@@ -429,12 +429,24 @@ const createWalletChart = () => {
   });
 };
 
+
 // Update charts when period changes
 watch(selectedPeriod, () => {
   createIncomeExpenseChart();
   createCategoryChart();
   createWalletChart();
 });
+
+// Update charts when transactions change
+watch(
+  () => store.transactions,
+  () => {
+    createIncomeExpenseChart();
+    createCategoryChart();
+    createWalletChart();
+  },
+  { deep: true }
+);
 
 // Initialize charts on mount
 onMounted(() => {
