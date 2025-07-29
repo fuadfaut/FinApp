@@ -1,4 +1,5 @@
 # FinApp Gokil! - Aplikasi Keuangan Sederhana (PWA)
+Aplikasi ini dibuat dengan Vibe Coding
 
 ![FinApp Logo](./public/pwa-192x192.png)
 
